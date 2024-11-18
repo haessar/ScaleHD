@@ -1263,23 +1263,24 @@ class AlleleGenotyping:
 
 			##
 			## Readers and pages
-			line_reader = PyPDF2.PdfFileReader(open(graph_list[0], 'rb')); line_page = line_reader.getPage(0)
-			bar_reader = PyPDF2.PdfFileReader(open(graph_list[1], 'rb')); bar_page = bar_reader.getPage(0)
+			line_reader = PyPDF2.PdfReader(open(graph_list[0], 'rb')); line_page = line_reader.pages[0]
+			bar_reader = PyPDF2.PdfReader(open(graph_list[1], 'rb')); bar_page = bar_reader.pages[0]
 
 			##
 			## Create new page (double width), append bar and line pages side-by-side
-			translated_page = PyPDF2.pdf.PageObject.createBlankPage(None, bar_page.mediaBox.getWidth()*2, bar_page.mediaBox.getHeight())
-			translated_page.mergeScaledTranslatedPage(bar_page, 1, 720, 0)
-			translated_page.mergePage(line_page)
-
+			translated_page = PyPDF2.PageObject.create_blank_page(None, bar_page.mediabox.width, bar_page.mediabox.height)
+			bar_transformation = PyPDF2.Transformation().translate(tx=720, ty=0)
+			bar_page.add_transformation(bar_transformation)
+			translated_page.merge_page(bar_page)
+			translated_page.merge_page(line_page)
 			##
 			## Write to one PDF
 			if hplus: suffix = 'AtypicalHomozyg'
 			else: suffix = ''
 			if not header: output_path = os.path.join(prediction_path, 'CCG{}CAGDetection_{}.pdf'.format(ccg_val, suffix))
 			else: output_path = os.path.join(prediction_path, 'IntroCCG.pdf')
-			writer = PyPDF2.PdfFileWriter()
-			writer.addPage(translated_page)
+			writer = PyPDF2.PdfWriter()
+			writer.add_page(translated_page)
 			with open(output_path, 'wb') as f:
 				writer.write(f)
 
@@ -1494,7 +1495,7 @@ class AlleleGenotyping:
 
 		##
 		## Merge alleles together
-		merger = PyPDF2.PdfFileMerger()
+		merger = PyPDF2.PdfMerger()
 		for pdf in uniques:
 			merger.append(pdf)
 		merger.write(sample_pdf_path)

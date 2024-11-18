@@ -476,10 +476,10 @@ class ScaleHD:
 
 		##
 		## Merge sample summary PDF with instance-wide PDF
-		merger = PyPDF2.PdfFileMerger()
+		merger = PyPDF2.PdfMerger()
 		for filename in [self.instance_graphs, sample_pdf_path]:
 			with open(filename, 'rb') as outfi:
-				merger.append(PyPDF2.PdfFileReader(outfi))
+				merger.append(PyPDF2.PdfReader(outfi))
 		merger.write(instance_path)
 
 	def append_report(self, sequencepair_object):
