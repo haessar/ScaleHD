@@ -96,7 +96,7 @@ class AlleleGenotyping:
 
 		##
 		## Classifier object and relevant parameters for our CCG prediction
-		svc_object = svm.LinearSVC(C=1.0, loss='ovr', penalty='l2', dual=False,
+		svc_object = svm.LinearSVC(C=1.0, loss='hinge', penalty='l2', dual=False,
 								   tol=1e-4, multi_class='crammer_singer', fit_intercept=True,
 								   intercept_scaling=1, verbose=0, random_state=0, max_iter=100000)
 
