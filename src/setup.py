@@ -90,7 +90,7 @@ setup(
 					  'cutadapt==1.18',
 					  'pyvcf',
 					  'fadapa',
-					  'setuptools'
+					  'setuptools<58.0.0'
 					  ],
 
     # These are the data files to be included in the package
