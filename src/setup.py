@@ -90,6 +90,7 @@ setup(
 					  'cutadapt==1.18',
 					  'PyVCF3',
 					  'fadapa',
+					  'pytest',
 					  ],
 
     # These are the data files to be included in the package
