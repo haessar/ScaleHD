@@ -453,7 +453,7 @@ def sanitise_inputs(parsed_arguments):
 	## Jobname prefix validity check
 	if parsed_arguments.jobname:
 		for character in parsed_arguments.jobname:
-			if character is ' ' or character is '/':
+			if character == ' ' or character == '/':
 				log.error('{}{}{}{}{}{}'.format(Colour.red,'shd__ ',Colour.end,'Specified Job Name has invalid characters: "', character, '"'))
 				trigger = True
 
