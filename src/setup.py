@@ -88,9 +88,8 @@ setup(
 					  'generatr==1.0',
 					  'batchadapt==1.2',  # 1.0 was yanked
 					  'cutadapt==1.18',
-					  'pyvcf',
+					  'PyVCF3',
 					  'fadapa',
-					  'setuptools<58.0.0'
 					  ],
 
     # These are the data files to be included in the package
