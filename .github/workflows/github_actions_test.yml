@@ -21,11 +21,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install bwa
-        uses: sigoden/install-binary@v1
+        uses: giantswarm/install-binary-action@v3
         with:
-          repo: lh3/bwa
-          tag: v0.7.17
-          # name: bwa-0.7.17.tar.bz2
+          binary: "bwa"
+          version: "0.7.17"
+          download_url: "https://deac-riga.dl.sourceforge.net/project/bio-${binary}/${binary}-${version}.tar.bz2"
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
