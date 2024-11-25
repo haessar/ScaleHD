@@ -24,8 +24,8 @@ jobs:
         uses: sigoden/install-binary@v1
         with:
           repo: lh3/bwa
-          # tag: v0.7.17
-          name: bwa-0.7.17.tar.bz2
+          tag: v0.7.17
+          # name: bwa-0.7.17.tar.bz2
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
