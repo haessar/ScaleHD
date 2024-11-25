@@ -24,8 +24,8 @@ jobs:
         uses: jaxxstorm/action-install-gh-release@v1.13.0
         with:
           repo: lh3/bwa
-          tag: v0.7.17
-          asset-name: bwa-0.7.17.tar.bz2
+          asset-name: v0.7.17
+          tag: 0.7.17
           extension: "\\.bz2"
           cache: enable
       - name: Install Python dependencies
