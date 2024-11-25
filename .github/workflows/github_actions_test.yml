@@ -20,6 +20,13 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Install bwa
+        uses: jaxxstorm/action-install-gh-release@v1.10.0
+        with:
+          repo: lh3/bwa
+          tag: v0.7.17
+          extension: "\\.bz2"
+          cache: enable
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
