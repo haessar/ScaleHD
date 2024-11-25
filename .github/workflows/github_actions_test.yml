@@ -26,6 +26,7 @@ jobs:
           repo: lh3/bwa
           tag: v0.7.17
           asset-name: bwa-0.7.17.tar.bz2
+          extension: "\\.bz2"
           cache: enable
       - name: Install Python dependencies
         run: |
