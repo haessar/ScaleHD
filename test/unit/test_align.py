@@ -1,3 +1,4 @@
+from glob import glob
 import os.path
 import shutil
 
@@ -7,13 +8,18 @@ from ScaleHD.align.__alignment import ReferenceIndex
 
 
 @pytest.fixture(scope='function')
-def setUp_tearDown(request):
+def setUp(request):
+    basename = "ref_sample"
     def tearDown():
-        shutil.rmtree("4k-HD-INTER")
+        shutil.rmtree(basename)
     request.addfinalizer(tearDown)
+    return {
+        "basename": basename,
+    }
 
 
-def test_reference_index(setUp_tearDown):
-    reference_file = "refs/4k-HD-INTER.fa"
+def test_reference_index(setUp):
+    reference_file = "test/refs/{}.fa".format(setUp["basename"])
     ri = ReferenceIndex(reference_file, target_output="")
     assert os.path.basename(ri.get_index_path()) == os.path.basename(reference_file)
+    assert len(glob(ri.get_index_path() + ".*")) == 5
