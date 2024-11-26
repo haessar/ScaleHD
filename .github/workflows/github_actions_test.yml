@@ -17,15 +17,16 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        # uses: actions/setup-python@v3
+        # with:
+        #   python-version: ${{ matrix.python-version }}
+        uses: conda-incubator/setup-miniconda@v3
         with:
+          auto-update-conda: true
           python-version: ${{ matrix.python-version }}
       - name: Install bwa
-        uses: giantswarm/install-binary-action@v3
-        with:
-          binary: "bwa"
-          version: "0.7.17"
-          download_url: "https://deac-riga.dl.sourceforge.net/project/bio-${binary}/${binary}-${version}.tar.bz2"
+        shell: bash -el {0}
+        run: conda install bioconda/label/cf201901::bwa
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
