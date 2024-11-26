@@ -1,6 +1,4 @@
 #!/bin/bash/python
-__version__ = '1.0'
-__author__ = 'alastair.maxwell@glasgow.ac.uk'
 
 ## imports
 import os
