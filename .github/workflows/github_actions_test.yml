@@ -4,6 +4,9 @@ on:
     branches: ["master"]
   pull_request:
     branches: ["master"]
+  schedule:
+    # ...or run once a month
+    - cron: "0 0 1 * *"
 jobs:
   build:
     strategy:
