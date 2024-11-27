@@ -1,8 +1,4 @@
-
-
 #/usr/bin/python
-__version__ = '1.0'
-__author__ = 'alastair.maxwell@glasgow.ac.uk'
 
 ##
 ## Generic imports
@@ -96,7 +92,7 @@ class AlleleGenotyping:
 
 		##
 		## Classifier object and relevant parameters for our CCG prediction
-		svc_object = svm.LinearSVC(C=1.0, loss='ovr', penalty='l2', dual=False,
+		svc_object = svm.LinearSVC(C=1.0, loss='hinge', penalty='l2', dual=False,
 								   tol=1e-4, multi_class='crammer_singer', fit_intercept=True,
 								   intercept_scaling=1, verbose=0, random_state=0, max_iter=100000)
 
@@ -1242,7 +1238,7 @@ class AlleleGenotyping:
 				if neg_anchor: xtickslabel = xticks[2]
 				else: xtickslabel = [i-1 for i in xticks[2]]
 				## plot bar data, remove x labels
-				sns.barplot(x,y); plt.xticks([])
+				sns.barplot(x=x,y=y); plt.xticks([])
 				## re-add x labels above respective bar plots
 				for p, dat in zip(ax.patches, xtickslabel):
 					ax.text(p.get_x() + p.get_width() / 2., p.get_height()+25, dat, ha="center", fontsize=9)
@@ -1263,23 +1259,25 @@ class AlleleGenotyping:
 
 			##
 			## Readers and pages
-			line_reader = PyPDF2.PdfFileReader(open(graph_list[0], 'rb')); line_page = line_reader.getPage(0)
-			bar_reader = PyPDF2.PdfFileReader(open(graph_list[1], 'rb')); bar_page = bar_reader.getPage(0)
+			line_reader = PyPDF2.PdfReader(open(graph_list[0], 'rb')); line_page = line_reader.pages[0]
+			bar_reader = PyPDF2.PdfReader(open(graph_list[1], 'rb')); bar_page = bar_reader.pages[0]
 
 			##
-			## Create new page (double width), append bar and line pages side-by-side
-			translated_page = PyPDF2.pdf.PageObject.createBlankPage(None, bar_page.mediaBox.getWidth()*2, bar_page.mediaBox.getHeight())
-			translated_page.mergeScaledTranslatedPage(bar_page, 1, 720, 0)
-			translated_page.mergePage(line_page)
-
+			## Create new page (double width), append bar and line pages side-by-side (CHANGED MW)
+			# translated_page = PyPDF2.PageObject.create_blank_page(None, bar_page.mediabox.width, bar_page.mediabox.height)
+			# bar_transformation = PyPDF2.Transformation().translate(tx=720, ty=0)
+			# bar_page.add_transformation(bar_transformation)
+			# translated_page.merge_page(bar_page)
+			# translated_page.merge_page(line_page)
 			##
 			## Write to one PDF
 			if hplus: suffix = 'AtypicalHomozyg'
 			else: suffix = ''
 			if not header: output_path = os.path.join(prediction_path, 'CCG{}CAGDetection_{}.pdf'.format(ccg_val, suffix))
 			else: output_path = os.path.join(prediction_path, 'IntroCCG.pdf')
-			writer = PyPDF2.PdfFileWriter()
-			writer.addPage(translated_page)
+			writer = PyPDF2.PdfWriter()
+			writer.add_page(line_page)
+			writer.add_page(bar_page)
 			with open(output_path, 'wb') as f:
 				writer.write(f)
 
@@ -1381,7 +1379,7 @@ class AlleleGenotyping:
 				peak_graph_path = os.path.join(predpath, peak_filename)
 				## Render the graph, append to list, close plot
 				graph_subfunction([0, 199, 200], target_distro, ['CAG Value', 'Read Count'],
-								([1, 200, 50], [1, 200], [0,50,100,150,200]), [np.int64(allele.get_fodcag() - 1)],
+								([1, 200, 50], [1, 200], [0,50,100,150]), [np.int64(allele.get_fodcag() - 1)],
 								predpath, peak_filename, prefix=peak_prefix)
 				temp_graphs.append(peak_graph_path); plt.close()
 
@@ -1448,7 +1446,7 @@ class AlleleGenotyping:
 			graph_subfunction([0, 21, 20], pri_rvarray, ['CCG Value', 'Read Count'], ([1, 20, 1], [1, 20], list(range(1,21))),
 							  ccg_peaks, predpath, 'CCGDetection.pdf', graph_type='bar', neg_anchor=True); plt.close()
 			graph_subfunction([0, 199, 200], target_distro, ['CAG Value', 'Read Count'],
-							  ([1, 200, 50], [1, 200], [0,50,100,150,200]), cag_peaks, predpath,
+							  ([1, 200, 50], [1, 200], [0,50,100,150]), cag_peaks, predpath,
 							  peak_filename, prefix=peak_prefix); plt.close()
 			graph_subfunction([0, len(sub)-1, len(sub)], sub, ['CAG Value', 'Read Count'],
 							  ([1, len(sub), 1], [1, len(sub)], slice_range), cag_peaks, predpath, altpeak_filename,
@@ -1494,7 +1492,7 @@ class AlleleGenotyping:
 
 		##
 		## Merge alleles together
-		merger = PyPDF2.PdfFileMerger()
+		merger = PyPDF2.PdfMerger()
 		for pdf in uniques:
 			merger.append(pdf)
 		merger.write(sample_pdf_path)

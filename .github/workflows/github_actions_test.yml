@@ -1,0 +1,45 @@
+name: Lint and tests
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+  schedule:
+    # ...or run once a month
+    - cron: "0 0 1 * *"
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.8"]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          python-version: ${{ matrix.python-version }}
+      - name: Install bwa
+        run: conda install bioconda/label/cf201901::bwa
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install "setuptools<58.0.0"
+          python -m pip install flake8 pytest
+          pip install src/
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 src/ --count --select=E9,F63,F7,F82 --show-source --statistics --exclude=build
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 src/ --count --exit-zero --max-line-length=127 --statistics --exclude=build
+      - name: Test with pytest
+        run: |
+          pytest
